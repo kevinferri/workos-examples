@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@workos-inc/node": "^7.45.0",
+    "crypto": "^1.0.1",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
