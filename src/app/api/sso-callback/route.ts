@@ -22,5 +22,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  return NextResponse.redirect(new URL("/sso", req.url));
+  return NextResponse.redirect(new URL("/", req.url));
 }
