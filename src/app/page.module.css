@@ -11,3 +11,8 @@
   gap: 6px;
   padding: 12px;
 }
+
+.auditLogForm {
+  display: flex;
+  gap: 6px;
+}

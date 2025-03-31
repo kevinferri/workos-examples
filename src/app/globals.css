@@ -35,6 +35,14 @@ a {
   text-decoration: none;
 }
 
+input {
+  padding: 6px;
+}
+
+button {
+  padding: 6px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
