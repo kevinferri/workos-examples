@@ -1,23 +1,23 @@
 "use server";
 
+import { withAuth } from "@workos-inc/authkit-nextjs";
 import { WorkOS } from "@workos-inc/node";
 import { revalidatePath } from "next/cache";
-import { getLoggedInUser } from "~/lib/session";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 
 export async function createAuditLog(data: FormData) {
   const payload = data.get("audit-log-payload")?.toString() ?? "";
-  const profile = await getLoggedInUser();
+  const { user } = await withAuth();
 
-  if (!profile?.organizationId) return;
+  if (!user) return;
 
-  await workos.auditLogs.createEvent(profile.organizationId, {
+  await workos.auditLogs.createEvent(process.env.TEST_ORG_ID!, {
     action: "user.custom_log",
     occurredAt: new Date(),
     actor: {
       type: "user",
-      id: "user_01GBNJC3MX9ZZJW1FSTF4C5938",
+      id: user.id,
     },
     metadata: {
       payload,
@@ -25,7 +25,7 @@ export async function createAuditLog(data: FormData) {
     targets: [
       {
         type: "team",
-        id: "team_01GBNJD4MKHVKJGEWK42JNMBGS",
+        id: process.env.TEST_TEAM_ID!,
       },
     ],
     context: {

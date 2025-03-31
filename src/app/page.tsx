@@ -1,14 +1,24 @@
 import { WorkOS } from "@workos-inc/node";
+import Link from "next/link";
 import styles from "./page.module.css";
 import { createAuditLog } from "../actions/create-autdit-log";
-import { getLoggedInUser } from "~/lib/session";
-import { logOut } from "~/actions/logout";
+import { getCustomSsoUser } from "~/lib/sso-session";
+import { ssoSignOut } from "~/actions/sso-sign-out";
+import {
+  getSignInUrl,
+  getSignUpUrl,
+  withAuth,
+  signOut,
+} from "@workos-inc/authkit-nextjs";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 const directoryId = process.env.TEST_DIRECTORY_ID!;
 
 export default async function Home() {
-  const loggedInUser = await getLoggedInUser();
+  const { user } = await withAuth();
+  const signInUrl = await getSignInUrl();
+  const signUpUrl = await getSignUpUrl();
+  const customSsoUser = await getCustomSsoUser();
 
   const users = await workos.directorySync.listUsers({
     directory: directoryId,
@@ -21,21 +31,47 @@ export default async function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h2>SSO</h2>
-        {loggedInUser ? (
+        <h2>AuthKit</h2>
+        {user ? (
           <>
-            <pre>{JSON.stringify(loggedInUser, null, 2)}</pre>
-            <button onClick={logOut} style={{ width: "fit-content" }}>
-              Logout
+            <pre>{JSON.stringify(user, null, 2)}</pre>
+            <button
+              style={{ width: "fit-content" }}
+              onClick={async () => {
+                "use server";
+                await signOut();
+              }}
+            >
+              Sign out
+            </button>
+          </>
+        ) : (
+          <>
+            <Link href={signInUrl}>
+              <button>Sign in</button>
+            </Link>
+            <Link href={signUpUrl}>
+              <button>Sign up</button>
+            </Link>
+          </>
+        )}
+      </div>
+      <div className={styles.card}>
+        <h2>SSO</h2>
+        {customSsoUser ? (
+          <>
+            <pre>{JSON.stringify(customSsoUser, null, 2)}</pre>
+            <button onClick={ssoSignOut} style={{ width: "fit-content" }}>
+              Sign out
             </button>
           </>
         ) : (
           <>
             <a href="/api/sso-api">
-              <button>SSO standalone API</button>
+              <button>API</button>
             </a>
             <a href="/api/sso-sdk">
-              <button>SSO SDK</button>
+              <button>SDK</button>
             </a>
           </>
         )}

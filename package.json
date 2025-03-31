@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@workos-inc/authkit-nextjs": "^2.2.0",
     "@workos-inc/node": "^7.45.0",
     "crypto": "^1.0.1",
     "jsonwebtoken": "^9.0.2",
