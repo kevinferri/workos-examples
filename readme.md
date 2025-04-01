@@ -5,3 +5,4 @@
 - Directory Sync
 - Events via webhooks
 - Audit logs
+- Admin Portal

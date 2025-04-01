@@ -41,6 +41,7 @@ input {
 
 button {
   padding: 6px;
+  width: fit-content;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -10,6 +10,7 @@ import {
   withAuth,
   signOut,
 } from "@workos-inc/authkit-nextjs";
+import { AdminPortalLink } from "~/components/admin-portal-link";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 const directoryId = process.env.TEST_DIRECTORY_ID!;
@@ -36,7 +37,6 @@ export default async function Home() {
           <>
             <pre>{JSON.stringify(user, null, 2)}</pre>
             <button
-              style={{ width: "fit-content" }}
               onClick={async () => {
                 "use server";
                 await signOut();
@@ -61,9 +61,7 @@ export default async function Home() {
         {customSsoUser ? (
           <>
             <pre>{JSON.stringify(customSsoUser, null, 2)}</pre>
-            <button onClick={ssoSignOut} style={{ width: "fit-content" }}>
-              Sign out
-            </button>
+            <button onClick={ssoSignOut}>Sign out</button>
           </>
         ) : (
           <>
@@ -88,6 +86,11 @@ export default async function Home() {
           />
           <button type="submit">Submit</button>
         </form>
+      </div>
+
+      <div className={styles.card}>
+        <h2>Admin Portal</h2>
+        <AdminPortalLink />
       </div>
 
       <div className={styles.card}>
