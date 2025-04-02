@@ -13,7 +13,5 @@ export async function verifyMfa(
 
   if (!user) return undefined;
 
-  console.log(authenticationChallengeId);
-
   return await workos.mfa.verifyChallenge({ authenticationChallengeId, code });
 }
