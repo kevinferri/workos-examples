@@ -60,7 +60,7 @@ export function Mfa() {
             <Image
               height={200}
               width={200}
-              src={factor.totp?.qrCode}
+              src={factor.totp.qrCode}
               alt="qr code"
             />
           )}
@@ -80,9 +80,7 @@ export function Mfa() {
       {verification && (
         <>
           <pre>{JSON.stringify(verification, null, 2)}</pre>
-          <button onClick={handleReset} disabled={isPending}>
-            {isPending ? "Resetting..." : "Reset"}
-          </button>
+          <button onClick={handleReset}>Reset</button>
         </>
       )}
     </>
