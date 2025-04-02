@@ -1,16 +1,17 @@
-import { WorkOS } from "@workos-inc/node";
-import Link from "next/link";
-import styles from "./page.module.css";
-import { createAuditLog } from "../actions/create-autdit-log";
-import { getCustomSsoUser } from "~/lib/sso-session";
-import { ssoSignOut } from "~/actions/sso-sign-out";
 import {
   getSignInUrl,
   getSignUpUrl,
-  withAuth,
   signOut,
+  withAuth,
 } from "@workos-inc/authkit-nextjs";
+import { WorkOS } from "@workos-inc/node";
+import Link from "next/link";
+import { ssoSignOut } from "~/actions/sso-sign-out";
 import { AdminPortalLink } from "~/components/admin-portal-link";
+import { Mfa } from "~/components/mfa";
+import { getCustomSsoUser } from "~/lib/sso-session";
+import { createAuditLog } from "../actions/create-autdit-log";
+import styles from "./page.module.css";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 const directoryId = process.env.TEST_DIRECTORY_ID!;
@@ -91,6 +92,11 @@ export default async function Home() {
       <div className={styles.card}>
         <h2>Admin Portal</h2>
         <AdminPortalLink />
+      </div>
+
+      <div className={styles.card}>
+        <h2>MFA</h2>
+        <Mfa />
       </div>
 
       <div className={styles.card}>

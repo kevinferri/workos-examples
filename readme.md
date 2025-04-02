@@ -6,3 +6,4 @@
 - Events via webhooks
 - Audit logs
 - Admin Portal
+- MFA
