@@ -39,7 +39,8 @@ input {
   padding: 6px;
 }
 
-button {
+button,
+select {
   padding: 6px;
   width: fit-content;
 }
