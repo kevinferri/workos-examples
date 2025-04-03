@@ -6,6 +6,7 @@ import { verifyMfa } from "~/actions/verify-mfa";
 
 export function MfaTotp() {
   const [factor, setFactor] = useState<Awaited<ReturnType<typeof enrollMfa>>>();
+  const [code, setCode] = useState<string>();
   const [challenge, setChallenge] =
     useState<Awaited<ReturnType<typeof challengeMfa>>>();
   const [verification, setVerification] =
@@ -27,10 +28,10 @@ export function MfaTotp() {
     });
   };
 
-  const handleVerify = () => {
+  const handleVerify = (code?: string) => {
     startTransition(async () => {
-      if (!challenge || !factor?.totp?.secret) return;
-      const response = await verifyMfa(challenge.id, factor.totp.secret);
+      if (!challenge || !code) return;
+      const response = await verifyMfa(challenge.id, code);
       setVerification(response);
     });
   };
@@ -68,9 +69,15 @@ export function MfaTotp() {
 
       {challenge && !verification && (
         <>
-          <button onClick={handleVerify} disabled={isPending}>
+          <button onClick={() => handleVerify(code)} disabled={isPending}>
             {isPending ? "Verifying..." : "Verify with challenge:"}
           </button>
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="Enter code"
+          />
           <pre>{JSON.stringify(challenge, null, 2)}</pre>
         </>
       )}

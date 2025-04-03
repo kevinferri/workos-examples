@@ -96,7 +96,7 @@ export default async function Home() {
 
       <div className={styles.card}>
         <h2>MFA</h2>
-        <Mfa />
+        {user ? <Mfa /> : <p>Sign in via AuthKit to enroll MFA</p>}
       </div>
 
       <div className={styles.card}>
