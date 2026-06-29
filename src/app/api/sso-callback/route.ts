@@ -1,7 +1,7 @@
 import { WorkOS } from "@workos-inc/node";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 const clientId = process.env.WORKOS_CLIENT_ID!;
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const { profile, accessToken } = await workos.sso.getProfileAndToken({
+  const { profile } = await workos.sso.getProfileAndToken({
     code,
     clientId,
   });
@@ -27,9 +27,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const token = jwt.sign(profile, process.env.JWT_KEY, {
-    expiresIn: "1d",
-  });
+  const secret = new TextEncoder().encode(process.env.JWT_KEY);
+  const token = await new SignJWT({ ...profile })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("1d")
+    .sign(secret);
 
   c.set(process.env.SESSION_NAME!, token, {
     httpOnly: true,

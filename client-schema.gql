@@ -1,0 +1,612 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""An OAuth profile linked to the authenticated user."""
+type ClientApi_ConnectedAccount {
+  email: String
+  firstName: String
+  id: ID!
+  lastLoginAt: DateTime
+  lastName: String
+  profilePictureUrl: String
+  provider: ClientApi_OAuthProvider!
+}
+
+"""OAuth provider for a connected account."""
+enum ClientApi_OAuthProvider {
+  AppleOAuth
+  BitbucketOAuth
+  DiscordOAuth
+  GitLabOAuth
+  GithubOAuth
+  GoogleOAuth
+  IntuitOAuth
+  LinkedInOAuth
+  MicrosoftOAuth
+  SalesforceOAuth
+  SlackOAuth
+  VercelMarketplaceOAuth
+  VercelOAuth
+  XeroOAuth
+}
+
+"""An organization in the current environment."""
+type ClientApi_Organization {
+  """
+  Whether the organization allows profiles outside the organization domains.
+  """
+  allowProfilesOutsideOrganization: Boolean!
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+}
+
+"""A registered passkey (WebAuthn credential) for the authenticated user."""
+type ClientApi_Passkey {
+  createdAt: DateTime!
+  id: ID!
+
+  """When this passkey was last used to authenticate."""
+  lastVerifiedAt: DateTime
+  updatedAt: DateTime!
+}
+
+"""A role available within the organization."""
+type ClientApi_Role {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+
+  """Whether this is the default role assigned to new members."""
+  isDefault: Boolean!
+  name: String!
+  slug: String!
+  updatedAt: DateTime!
+}
+
+"""
+Roles available in the organization along with role assignment configuration.
+"""
+type ClientApi_RolesResult {
+  """Whether members can be assigned multiple roles simultaneously."""
+  multipleRolesEnabled: Boolean!
+  roles: [ClientApi_Role!]!
+}
+
+"""An active user session."""
+type ClientApi_Session {
+  createdAt: DateTime!
+  currentLocation: ClientApi_SessionLocation
+  id: ID!
+  ipAddress: String
+
+  """Whether this session is the one making the request."""
+  isCurrent: Boolean!
+  lastActivityAt: DateTime
+  organizationId: String
+  state: ClientApi_SessionState!
+  updatedAt: DateTime!
+  userAgent: String
+}
+
+"""Approximate geographic location derived from the session IP."""
+type ClientApi_SessionLocation {
+  cityName: String!
+  countryISOCode: String!
+}
+
+"""The lifecycle state of a session."""
+type ClientApi_SessionState {
+  expiresAt: DateTime
+
+  """Session state: Issued, Revoked, etc."""
+  tag: String!
+}
+
+"""A user in the current environment."""
+type ClientApi_User {
+  connectedAccounts: [ClientApi_ConnectedAccount!]!
+  createdAt: DateTime!
+  email: String!
+  emailVerified: Boolean!
+  firstName: String
+  id: ID!
+  lastName: String
+
+  """
+  Whether multi-factor authentication (TOTP) is set up for this user. Only populated on `me`.
+  """
+  mfaEnabled: Boolean!
+
+  """When MFA was last used to authenticate. Only populated on `me`."""
+  mfaLastUsedAt: DateTime
+  profilePictureUrl: String
+  updatedAt: DateTime!
+}
+
+"""
+An organization the authenticated user belongs to, with a flag indicating whether it is the token's current organization.
+"""
+type ClientApi_UserOrganization {
+  id: ID!
+
+  """Whether this is the organization the token is currently scoped to."""
+  isCurrent: Boolean!
+  name: String!
+}
+
+"""Input for confirming an email change with the verification code."""
+input ConfirmEmailChangeInput {
+  """The verification code sent to the new email address."""
+  code: String!
+
+  """The elevated access token from a successful `verifyCurrentEmail` call."""
+  elevatedAccessToken: String!
+}
+
+union ConfirmEmailChangeResult = EmailChangeCodeExpired | EmailChangeCodeIncorrect | EmailChangeCodePreviouslyUsed | EmailChangeConfirmed | EmailChangeTooManyAttempts | EmailManagedByProvider | EmailNotAvailable | IdentityVerificationExpired | IdentityVerificationInvalid | InvalidEmail | NoPendingEmailChange
+
+"""The current email was verified successfully."""
+type CurrentEmailVerified {
+  """
+  The elevated access token to pass to `sendEmailChange` and `confirmEmailChange`.
+  """
+  elevatedAccessToken: String!
+
+  """When the elevated access token expires (ISO 8601)."""
+  expiresAt: String!
+}
+
+"""Daily verification email quota exceeded."""
+type DailyEmailQuotaExceeded {
+  message: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""The verification code has expired."""
+type EmailChangeCodeExpired {
+  message: String!
+}
+
+"""The verification code is incorrect."""
+type EmailChangeCodeIncorrect {
+  message: String!
+}
+
+"""The verification code has already been used."""
+type EmailChangeCodePreviouslyUsed {
+  message: String!
+}
+
+"""The email was changed successfully."""
+type EmailChangeConfirmed {
+  """A fresh elevated access token for subsequent elevated operations."""
+  elevatedAccessToken: String!
+
+  """When the elevated access token expires (ISO 8601)."""
+  expiresAt: String!
+  user: ClientApi_User!
+}
+
+"""Email change is not available for this account."""
+type EmailChangeNotAvailable {
+  message: String!
+}
+
+"""A verification code was sent to the new email address."""
+type EmailChangeSent {
+  """When the verification code expires."""
+  expiresAt: DateTime!
+}
+
+"""Too many verification attempts."""
+type EmailChangeTooManyAttempts {
+  message: String!
+}
+
+"""The email is managed by an identity provider and cannot be changed."""
+type EmailManagedByProvider {
+  message: String!
+}
+
+"""The email address is not available."""
+type EmailNotAvailable {
+  message: String!
+}
+
+"""
+The identity verification has expired. Please verify your current email again.
+"""
+type IdentityVerificationExpired {
+  message: String!
+}
+
+"""The identity verification is no longer valid."""
+type IdentityVerificationInvalid {
+  message: String!
+}
+
+"""The provided email address is invalid."""
+type InvalidEmail {
+  message: String!
+}
+
+"""
+The requested invitation expiry is outside the allowed range (1–30 days).
+"""
+type InvalidInvitationExpiry {
+  """Placeholder field to allow an empty @ObjectType."""
+  _placeholder: Boolean
+}
+
+"""The provided email address is not valid."""
+type InvalidInviteeEmail {
+  email: String!
+}
+
+"""The requested role is not valid for this organization."""
+type InvalidInviteeRole {
+  roleSlug: String
+}
+
+"""The provided locale is not a valid BCP 47 tag."""
+type InvalidLocale {
+  _placeholder: Boolean!
+}
+
+"""No pending invitation with the given ID exists for this organization."""
+type InvitationNotFound {
+  invitationId: ID!
+}
+
+"""
+The invitation is not pending (already accepted, expired, or revoked) and cannot be revoked.
+"""
+type InvitationNotPending {
+  invitationId: ID!
+}
+
+"""The invitation was revoked."""
+type InvitationRevoked {
+  invitation: OrganizationInvitation!
+}
+
+input InviteUserInput {
+  """The email address to invite."""
+  email: String!
+
+  """
+  Number of days until the invitation expires. Defaults to the environment setting when omitted.
+  """
+  expiresInDays: Int
+
+  """
+  Slug of the role to grant on acceptance. Defaults to the organization default role when omitted.
+  """
+  roleSlug: String
+}
+
+union InviteUserResult = InvalidInvitationExpiry | InvalidInviteeEmail | InvalidInviteeRole | InviteeAlreadyInvited | InviteeAlreadyMember | UserInvited
+
+"""This email already has a pending invitation."""
+type InviteeAlreadyInvited {
+  email: String!
+}
+
+"""A user with this email is already a member of the organization."""
+type InviteeAlreadyMember {
+  email: String!
+}
+
+type ListMetadata {
+  after: String
+  before: String
+}
+
+"""No active member was found for the given user in the organization."""
+type MemberNotFound {
+  """The user ID that did not resolve to a member."""
+  userId: ID!
+}
+
+"""The member was removed from the organization."""
+type MemberRemoved {
+  """The user ID of the removed member."""
+  userId: ID!
+}
+
+"""The member's role was updated."""
+type MemberRoleUpdated {
+  member: OrganizationMember!
+}
+
+type Mutation {
+  """
+  Confirms an email change using the verification code sent to the new email address. Requires an elevated access token from `verifyCurrentEmail`.
+  """
+  confirmEmailChange(input: ConfirmEmailChangeInput!): ConfirmEmailChangeResult!
+
+  """
+  Invite a user to the organization the token was issued for, assigning a role and sending the invitation email.
+  """
+  inviteUser(input: InviteUserInput!): InviteUserResult!
+
+  """Remove a member from the organization the token was issued for."""
+  removeMember(input: RemoveMemberInput!): RemoveMemberResult!
+
+  """
+  Revoke a pending invitation for the organization the token was issued for.
+  """
+  revokeInvitation(input: RevokeInvitationInput!): RevokeInvitationResult!
+
+  """
+  Sends a verification code to the new email address. Requires an elevated access token from `verifyCurrentEmail`. The user must confirm with the code via `confirmEmailChange`.
+  """
+  sendEmailChange(input: SendEmailChangeInput!): SendEmailChangeResult!
+
+  """
+  Sends a verification code to the user's current email address to prove ownership before changing email.
+  """
+  sendVerificationCode: SendVerificationCodeResult!
+
+  """
+  Update an organization member's role within the organization the token was issued for.
+  """
+  updateMemberRole(input: UpdateMemberRoleInput!): UpdateMemberRoleResult!
+
+  """
+  Updates the authenticated user's profile (first name, last name, locale).
+  """
+  updateProfile(input: UpdateProfileInput!): UpdateProfileResult!
+
+  """
+  Verifies the code sent to the current email address. Returns an elevated access token required for `sendEmailChange` and `confirmEmailChange`.
+  """
+  verifyCurrentEmail(input: VerifyCurrentEmailInput!): VerifyCurrentEmailResult!
+}
+
+"""There is no pending email change to confirm."""
+type NoPendingEmailChange {
+  message: String!
+}
+
+"""An invitation to join the organization the token was issued for."""
+type OrganizationInvitation {
+  createdAt: DateTime!
+
+  """The email address the invitation was sent to."""
+  email: String!
+
+  """When the invitation expires."""
+  expiresAt: DateTime!
+
+  """The ID of the invitation."""
+  id: ID!
+
+  """Slug of the role the invitee will be granted on acceptance, if any."""
+  roleSlug: String
+  status: OrganizationInvitationStatus!
+}
+
+enum OrganizationInvitationStatus {
+  Accepted
+  Expired
+  Pending
+  Revoked
+}
+
+"""
+An organization member — a user with their membership status and assigned roles.
+"""
+type OrganizationMember {
+  createdAt: DateTime!
+  email: String!
+  emailVerified: Boolean!
+  firstName: String
+
+  """The user ID of the member."""
+  id: ID!
+
+  """Timestamp of the member's most recent session activity."""
+  lastActivityAt: DateTime
+  lastName: String
+  profilePictureUrl: String
+  roles: [OrganizationMemberRole!]!
+  status: OrganizationMemberStatus!
+}
+
+"""A paginated list of organization members."""
+type OrganizationMemberList {
+  data: [OrganizationMember!]!
+  listMetadata: ListMetadata!
+}
+
+"""A role assigned to an organization member."""
+type OrganizationMemberRole {
+  name: String!
+  slug: String!
+}
+
+enum OrganizationMemberStatus {
+  Active
+  InviteExpired
+  InviteRevoked
+  Invited
+  NoInvite
+}
+
+"""Enum represents the pagination order."""
+enum PaginationOrder {
+  Asc
+  Desc
+  Normal
+}
+
+"""The profile was updated successfully."""
+type ProfileUpdated {
+  user: ClientApi_User!
+}
+
+type Query {
+  """
+  Placeholder query for the Client GraphQL API scaffold. Returns a static value and is replaced by real resolvers.
+  """
+  clientApiStatus: String!
+
+  """Returns the currently authenticated user (the subject of the token)."""
+  me: ClientApi_User!
+
+  """Returns an organization by ID within the token's environment."""
+  organization(id: ID!): ClientApi_Organization!
+
+  """
+  List members of the organization the token was issued for, with their roles.
+  """
+  organizationMemberships(
+    after: String
+    before: String
+    limit: Int = 10
+    order: PaginationOrder
+
+    """Filter members by role slug."""
+    roleSlug: String
+
+    """Filter members by name or email."""
+    search: String
+  ): OrganizationMemberList!
+
+  """List organizations the authenticated user belongs to."""
+  organizations: [ClientApi_UserOrganization!]!
+
+  """
+  List registered passkeys for the authenticated user. Requires a session token.
+  """
+  passkeys: [ClientApi_Passkey!]!
+
+  """
+  List roles available to the organization the token was issued for, with role assignment configuration.
+  """
+  roles: ClientApi_RolesResult!
+
+  """
+  List active sessions for the authenticated user. Requires a session token.
+  """
+  sessions: [ClientApi_Session!]!
+
+  """
+  Returns a user by ID, provided they are a member of the token's organization.
+  """
+  user(id: ID!): ClientApi_User!
+}
+
+input RemoveMemberInput {
+  """The user ID of the member to remove."""
+  userId: ID!
+}
+
+union RemoveMemberResult = MemberNotFound | MemberRemoved
+
+input RevokeInvitationInput {
+  """The ID of the invitation to revoke."""
+  invitationId: ID!
+}
+
+union RevokeInvitationResult = InvitationNotFound | InvitationNotPending | InvitationRevoked
+
+"""No active role with the given slug exists in the organization."""
+type RoleNotFound {
+  """The role slug that did not resolve to a role."""
+  roleSlug: String!
+}
+
+"""Input for requesting an email change verification code."""
+input SendEmailChangeInput {
+  """The elevated access token from a successful `verifyCurrentEmail` call."""
+  elevatedAccessToken: String!
+
+  """The new email address to change to."""
+  newEmail: String!
+}
+
+union SendEmailChangeResult = DailyEmailQuotaExceeded | EmailChangeNotAvailable | EmailChangeSent | EmailManagedByProvider | EmailNotAvailable | IdentityVerificationExpired | IdentityVerificationInvalid | InvalidEmail
+
+union SendVerificationCodeResult = DailyEmailQuotaExceeded | VerificationCodeSent
+
+input UpdateMemberRoleInput {
+  """Slug of the role to assign to the member."""
+  roleSlug: String!
+
+  """The user ID of the member to update."""
+  userId: ID!
+}
+
+union UpdateMemberRoleResult = MemberNotFound | MemberRoleUpdated | RoleNotFound
+
+"""Input for updating the authenticated user's profile."""
+input UpdateProfileInput {
+  """The user's first name. Pass an empty string to clear."""
+  firstName: String
+
+  """The user's last name. Pass an empty string to clear."""
+  lastName: String
+
+  """
+  The user's locale as a BCP 47 language tag (e.g. 'en-US'). Pass an empty string to clear.
+  """
+  locale: String
+}
+
+union UpdateProfileResult = InvalidLocale | ProfileUpdated
+
+"""The invitation was created and the email sent."""
+type UserInvited {
+  invitation: OrganizationInvitation!
+}
+
+"""The verification code has expired."""
+type VerificationCodeExpired {
+  message: String!
+}
+
+"""The verification code is incorrect."""
+type VerificationCodeIncorrect {
+  message: String!
+}
+
+"""The verification code has already been used."""
+type VerificationCodePreviouslyUsed {
+  message: String!
+}
+
+"""
+A verification code was sent to the current email address for identity verification.
+"""
+type VerificationCodeSent {
+  """The authentication challenge ID to use in subsequent steps."""
+  authenticationChallengeId: ID!
+
+  """When the verification code expires."""
+  expiresAt: DateTime!
+}
+
+"""Too many verification code attempts."""
+type VerificationTooManyAttempts {
+  message: String!
+}
+
+"""Input for verifying the current email address."""
+input VerifyCurrentEmailInput {
+  """The authentication challenge ID returned from `sendVerificationCode`."""
+  authenticationChallengeId: ID!
+
+  """The verification code sent to the current email address."""
+  code: String!
+}
+
+union VerifyCurrentEmailResult = CurrentEmailVerified | VerificationCodeExpired | VerificationCodeIncorrect | VerificationCodePreviouslyUsed | VerificationTooManyAttempts

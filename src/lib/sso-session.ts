@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { Profile } from "@workos-inc/node";
 
@@ -9,7 +9,9 @@ export async function getCustomSsoUser(): Promise<Profile | undefined> {
   if (!session) return undefined;
 
   try {
-    return jwt.verify(session.value, process.env.JWT_KEY);
+    const secret = new TextEncoder().encode(process.env.JWT_KEY);
+    const { payload } = await jwtVerify(session.value, secret);
+    return payload as unknown as Profile;
   } catch {
     return undefined;
   }

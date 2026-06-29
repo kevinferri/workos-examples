@@ -15,7 +15,6 @@ function parseSignatureHeader(signatureHeader: string | null) {
     timestamp: timestampMatch ? timestampMatch[1] : undefined,
     signature: signatureMatch ? signatureMatch[1] : null,
   };
-  undefined;
 }
 
 // Function to validate the signature
